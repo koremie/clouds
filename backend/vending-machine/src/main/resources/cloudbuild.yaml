@@ -5,4 +5,4 @@ steps:
       - '-c'
       - |
         set -x && \
-        gcloud compute ssh vending-machine --zone=europe-north1-a --command='/bin/sh sudo /home/danylo_kovalchuk_ir_2021/startup.sh'
+        gcloud compute ssh vending-machine --zone=europe-north1-a --command='/bin/sh /home/danylo_kovalchuk_ir_2021/starup.sh'
