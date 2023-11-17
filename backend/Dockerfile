@@ -1,21 +1,25 @@
 # Stage 1
-FROM maven:3.9.5-openjdk-17 AS build
+FROM maven:3.9.5-eclipse-temurin-17 as stage1
 
 ENV MAVEN_OPTS="-XX:+TieredCompilation -XX:TieredStopAtLevel=1"
 
 WORKDIR /.
 
-COPY . .
+COPY pom.xml .
 
-RUN mvn clean install -DskipTests
+RUN mvn dependency:go-offline
+
+COPY src ./src
+
+RUN mvn clean install -Dmaven.test.skip=true
 
 # Stage 2
-FROM adoptopenjdk:17-jre-hotspot
+FROM eclipse-temurin:17.0.8.1_1-jre
+
+EXPOSE 8080
 
 WORKDIR /.
 
-COPY --from=build target/*.jar ./app.jar
+COPY --from=stage1 target/*.jar ./app.jar
 
-CMD ["java", "-jar", "./app.jar"]
-
-EXPOSE 8080
+CMD java -jar ./app.jar
